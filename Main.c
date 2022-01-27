@@ -1,7 +1,8 @@
 //
 // Created by ykb20128 on 27/01/2022.
 //
-
+#include <stdio.h>
+#include <stdbool.h>
 #include "Main.h"
 int main (void) {
     bool q = false;
@@ -15,7 +16,7 @@ int main (void) {
             printf ("%s\n",errormsg);
         }
         else if (num < 10 && num >=0 ){
-            print_digit(num);
+            q = true;
         }
         else if (d_buffer[0] == 'q' || d_buffer[0] == 'Q'){
             q = true;

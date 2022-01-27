@@ -4,26 +4,30 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "Main.h"
+#include <string.h>
 int main (void) {
     bool q = false;
     char errormsg[] = "Wrong input, either put in 0-9 or q to quit.";
     while (q == false){
-        char d_buffer[30];
-        printf("Gib 1 digit number ");
-        scanf("%29s", d_buffer);
-        int num = d_buffer[0] - 48;
-        if (d_buffer[1] != '\0'){
-            printf ("%s\n",errormsg);
-        }
-        else if (num < 10 && num >=0 ){
+        char d_buffer[513];
+        printf(">");
+        gets(d_buffer);
+        if (strcmp (d_buffer, "exit") ==0){
             q = true;
+            break;
         }
-        else if (d_buffer[0] == 'q' || d_buffer[0] == 'Q'){
-            q = true;
+
+        const char s[2] = " ";
+        char *token;
+        /* get the first token */
+        token = strtok(d_buffer, s);
+        /* walk through other tokens */
+        while( token != NULL ) {
+            printf( " %s\n", token );
+
+            token = strtok(NULL, s);
         }
-        else {
-            printf ("%s\n",errormsg);
-        }
+
     }
     return 0;
 }

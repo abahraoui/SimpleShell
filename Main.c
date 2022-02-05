@@ -7,12 +7,27 @@
 #include <string.h>
 int main (void) {
     bool q = false;
-    char errormsg[] = "Wrong input, either put in 0-9 or q to quit.";
-    while (q == false){
-        char d_buffer[513];
+    int c = 0;
+    printf("%s\n","> Welcome to the Amogus Shell! Type exit or enter then CTRL+D to exit the shell");
+    while ((q == false) && (c != EOF)){
+
+
         printf(">");
+
+        char d_buffer[512];
+
+
+
         gets(d_buffer);
-        if (strcmp (d_buffer, "exit") ==0){
+        if(d_buffer[0] == NULL){
+            printf("%s\n",">Press enter again if you want to continue or type CTRL+D to exit the shell");
+            c = fgetc(stdin);
+        }
+        /* if nothing was read from input, it then reads a new input waiting for CTRL+D, will put the value of
+           CTRL+D(which is EOF) in c and it will break the while loop if c == EOF*/
+
+
+        if (strcmp (d_buffer, "exit") == 0){
             q = true;
             break;
         }
@@ -23,7 +38,7 @@ int main (void) {
         token = strtok(d_buffer, s);
         /* walk through other tokens */
         while( token != NULL ) {
-            printf( " %s\n", token );
+            printf( " %s%s\n", "<" ,token );
 
             token = strtok(NULL, s);
         }

@@ -18,7 +18,7 @@ int main(void) {
         if (strcmp(d_buffer, "exit\n") == 0)
             break;
 
-        const char s[2] = " ";
+        const char *s = " ;\t|><&;";
         char *token;
         /* get the first token */
         token = strtok(d_buffer, s);

@@ -28,6 +28,7 @@ printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the s
             token = strtok(NULL, s);
             i++;
         }
+        execFork(inputArray);
     }
     printf("\nExiting...\n");
 }

@@ -6,5 +6,5 @@
 #define CS210_SIMPLE_AMOGUS_SHELL_MAIN_H
 
 void run();
-
+void execFork(char *inputArr[]);
 #endif //CS210_SIMPLE_AMOGUS_SHELL_MAIN_H

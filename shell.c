@@ -8,7 +8,7 @@ void run(){
 printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the shell");
     while (1) {
         char d_buffer[512];
-        char *inputArray[30];
+        char *inputArray[50];
         int i = 0;
         printf("> ");
 

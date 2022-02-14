@@ -3,7 +3,7 @@
 #include "Main.h"
 #include <string.h>
 
-#include "list.h"
+#include "shell.h"
 
 void run(){
   printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the shell");

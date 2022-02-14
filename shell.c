@@ -46,7 +46,7 @@ void execFork(char *inputArr[]){
 
         if(result == -1){
             char error[200];
-            snprintf(error, sizeof(error), "Erroe on %s", inputArr[0]);
+            snprintf(error, sizeof(error), "Error on %s", inputArr[0]);
             perror(error);
             exit(1);
         }

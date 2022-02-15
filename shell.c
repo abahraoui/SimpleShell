@@ -29,8 +29,8 @@ printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the s
             i++;
         }
         inputArray[i] = NULL;
-        execFork(inputArray);
     }
+    execFork(inputArray);
     printf("\nExiting...\n");
 }
 

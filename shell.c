@@ -3,11 +3,14 @@
 #include <string.h>
 #include <stdlib.h>
 #include "shell.h"
+#include <unistd.h>
+#include <sys/wait.h>
+
 
 void run(){
 printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the shell");
-    char *inputArray[50];
     while (1) {
+        char *inputArray[50];
         char d_buffer[512];
         int i = 0;
         printf("> ");
@@ -29,28 +32,26 @@ printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the s
             i++;
         }
         inputArray[i] = NULL;
-    }
-    execFork(inputArray);
-    printf("\nExiting...\n");
-}
+        int result;
 
-void execFork(char *inputArr[]){
-    int result;
+        pid_t pid = fork();
 
-    pid_t pid = fork();
+        if(pid < 0){
+            printf("Fork was unsuccessful.\n");
+        } else if(pid == 0){
+            execvp(inputArray[0], inputArray);
 
-    if(pid < 0){
-        printf("Fork was unsuccessful.\n");
-    } else if(pid == 0){
-        result = execvp(inputArr[0], inputArr);
-
-        if(result == -1){
-            char error[100];
-            snprintf(error, sizeof(error), "Error on %s", inputArr[0]);
-            perror(error);
-            exit(1);
+            if(result == -1){
+                char error[100];
+                snprintf(error, sizeof(error), "Error on %s", inputArray[0]);
+                perror(error);
+                exit(1);
+            }
+        } else {
+            wait(NULL);
         }
-    } else {
-        wait(NULL);
+        printf("\nExiting...\n");
     }
+
 }
+

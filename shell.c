@@ -36,7 +36,6 @@ printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the s
 
 void execFork(char *inputArr[]){
     int result;
-    int i = 0;
 
     int pid = fork();
 

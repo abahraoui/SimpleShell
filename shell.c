@@ -6,9 +6,9 @@
 
 void run(){
 printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the shell");
+    char *inputArray[50];
     while (1) {
         char d_buffer[512];
-        char *inputArray[50];
         int i = 0;
         printf("> ");
 
@@ -37,7 +37,7 @@ printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the s
 void execFork(char *inputArr[]){
     int result;
 
-    int pid = fork();
+    pid_t pid = fork();
 
     if(pid < 0){
         printf("Fork was unsuccessful.\n");

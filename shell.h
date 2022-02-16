@@ -5,6 +5,8 @@
 #ifndef CS210_SIMPLE_AMOGUS_SHELL_MAIN_H
 #define CS210_SIMPLE_AMOGUS_SHELL_MAIN_H
 
+void run();
 
+void execCommand(char *inputArr[]);
 
 #endif //CS210_SIMPLE_AMOGUS_SHELL_MAIN_H

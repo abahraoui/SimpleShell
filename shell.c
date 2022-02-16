@@ -1,15 +1,10 @@
-//
-// Created by ykb20128 on 27/01/2022.
-//
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
 
-
-
-void execCommand(char * argv[]){
+void execCommand(char *argv[]) {
 
     pid_t pid = fork();
 
@@ -25,7 +20,7 @@ void execCommand(char * argv[]){
     }
 }
 
-void run(void){
+void run(void) {
     while (1) {
 
         printf("> ");
@@ -56,13 +51,3 @@ void run(void){
 
     }
 }
-
-
-int main(void) {
-
-    printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the shell");
-    run();
-    printf("\nExiting...\n");
-    return 0;
-}
-

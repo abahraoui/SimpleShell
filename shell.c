@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <stdlib.h>
+#include <limits.h>
 
 void execCommand(char *argv[]) {
 
@@ -20,10 +21,21 @@ void execCommand(char *argv[]) {
     }
 }
 
-void run(void) {
-    while (1) {
+void getPathCommand() {
+    printf("PATH: %s\n", getenv("PATH"));
+}
 
-        printf("> ");
+void setPathCommand(char *newPath[]) {
+    setenv("PATH", newPath[1], 1);
+    printf("NEW PATH: %s\n", getenv("PATH"));
+}
+
+void run(void) {
+    chdir(getenv("HOME"));
+    char *currentPath[PATH_MAX];
+    while (1) {
+        getcwd(currentPath, sizeof(currentPath));
+        printf("%s> ", currentPath);
 
         char *d_buffer[512];
 
@@ -33,7 +45,7 @@ void run(void) {
             break;
 
         char *commandArray[50]; // Stage 2 change, String array which store commands.
-        const char *delimiter = " ;\t|><&\n;";
+        const char *delimiter = " ;\t|><&\n";
         const char *token;
         /* get the first token */
         token = strtok(d_buffer, delimiter);
@@ -47,7 +59,14 @@ void run(void) {
         }
         commandArray[i] = NULL;
 
-        execCommand(commandArray);
+        if (commandArray[0] == NULL)
+            continue;
+        else if (strcmp(commandArray[0], "getpath") == 0)
+            getPathCommand();
+        else if (strcmp(commandArray[0], "setpath") == 0)
+            setPathCommand(commandArray);
+        else
+            execCommand(commandArray);
 
     }
 }

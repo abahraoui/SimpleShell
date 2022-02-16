@@ -1,57 +1,53 @@
 #include <stdio.h>
-#include <stdbool.h>
 #include <string.h>
-#include <stdlib.h>
-#include "shell.h"
 #include <unistd.h>
 #include <sys/wait.h>
+#include <stdlib.h>
 
+void execCommand(char *argv[]) {
 
-void run(){
-printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the shell");
+    pid_t pid = fork();
+
+    if (pid < 0) {
+        perror("fork failed");
+        exit(1);
+    } else if (pid == 0) {
+        execvp(argv[0], argv);
+        perror("Error");
+        exit(1);
+    } else {
+        wait(NULL);
+    }
+}
+
+void run(void) {
     while (1) {
-        char *inputArray[50];
-        char d_buffer[512];
-        int i = 0;
+
         printf("> ");
+
+        char *d_buffer[512];
 
         if (fgets(d_buffer, 512, stdin) == NULL)
             break;
         if (strcmp(d_buffer, "exit\n") == 0)
             break;
 
-      const char *s = " ;\t|><&;";
-      char *token;
-      /* get the first token */
-        token = strtok(d_buffer, s);
-      /* walk through other tokens */
+        char *commandArray[50]; // Stage 2 change, String array which store commands.
+        const char *delimiter = " ;\t|><&\n;";
+        const char *token;
+        /* get the first token */
+        token = strtok(d_buffer, delimiter);
+        /* walk through other tokens */
+        int i = 0;
         while (token != NULL) {
-            printf(" %s%s\n", "<", token);
-            inputArray[i] = token;
-            token = strtok(NULL, s);
+            //printf(" %s%s\n", "<", token);
+            commandArray[i] = token;
+            token = strtok(NULL, delimiter);
             i++;
         }
-        inputArray[i] = NULL;
-        int result;
+        commandArray[i] = NULL;
 
-        pid_t pid = fork();
+        execCommand(commandArray);
 
-        if(pid < 0){
-            printf("Fork was unsuccessful.\n");
-        } else if(pid == 0){
-            execvp(inputArray[0], inputArray);
-
-            if(result == -1){
-                char error[100];
-                snprintf(error, sizeof(error), "Error on %s", inputArray[0]);
-                perror(error);
-                exit(1);
-            }
-        } else {
-            wait(NULL);
-        }
-        printf("\nExiting...\n");
     }
-
 }
-

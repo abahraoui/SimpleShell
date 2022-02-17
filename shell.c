@@ -21,13 +21,22 @@ void execCommand(char *argv[]) {
     }
 }
 
-void getPathCommand() {
-    printf("PATH: %s\n", getenv("PATH"));
+void getPathCommand(char *parameters[]) {
+    if (parameters[1] == NULL)
+        printf("PATH: %s\n", getenv("PATH"));
+    else
+        printf("GETPATH should not have any parameter!\n");
 }
 
-void setPathCommand(char *newPath[]) {
-    setenv("PATH", newPath[1], 1);
-    printf("NEW PATH: %s\n", getenv("PATH"));
+void setPathCommand(char *parameters[]) {
+    if (parameters[1] == NULL)
+        printf("SETPATH should have 1 string parameter, but I received none.\n");
+    else if (parameters[2] != NULL)
+        printf("SETPATH should have only 1 parameter, but I received more, please try removing the other parameters.\n");
+    else {
+        setenv("PATH", parameters[1], 1);
+        printf("NEW PATH: %s\n", getenv("PATH"));
+    }
 }
 
 void run(void) {
@@ -62,7 +71,7 @@ void run(void) {
         if (commandArray[0] == NULL)
             continue;
         else if (strcmp(commandArray[0], "getpath") == 0)
-            getPathCommand();
+            getPathCommand(commandArray);
         else if (strcmp(commandArray[0], "setpath") == 0)
             setPathCommand(commandArray);
         else

@@ -21,21 +21,33 @@ void execCommand(char *argv[]) {
     }
 }
 
+void changeDirectoryCommand(char *parameters[]){
+    if(parameters[1] == NULL){
+        chdir(getenv("HOME"));
+    }
+    else if(parameters != NULL){
+       int success = chdir(parameters[1]);
+       if(success == -1) perror("Error");
+
+    }
+
+}
+
 void getPathCommand(char *parameters[]) {
     if (parameters[1] == NULL)
-        printf("PATH: %s\n", getenv("PATH"));
+        printf(" < PATH: %s\n", getenv("PATH"));
     else
-        printf("GETPATH should not have any parameter!\n");
+        printf(" < GETPATH should not have any parameter!\n");
 }
 
 void setPathCommand(char *parameters[]) {
     if (parameters[1] == NULL)
-        printf("SETPATH should have 1 string parameter, but I received none.\n");
+        printf(" < SETPATH should have 1 string parameter, but I received none.\n");
     else if (parameters[2] != NULL)
-        printf("SETPATH should have only 1 parameter, but I received more, please try removing the other parameters.\n");
+        printf(" < SETPATH should have only 1 parameter, but I received more, please try removing the other parameters.\n");
     else {
         setenv("PATH", parameters[1], 1);
-        printf("NEW PATH: %s\n", getenv("PATH"));
+        printf(" < NEW PATH: %s\n", getenv("PATH"));
     }
 }
 
@@ -74,6 +86,8 @@ void run(void) {
             getPathCommand(commandArray);
         else if (strcmp(commandArray[0], "setpath") == 0)
             setPathCommand(commandArray);
+        else if (strcmp(commandArray[0], "cd") == 0)
+            changeDirectoryCommand(commandArray);
         else
             execCommand(commandArray);
 

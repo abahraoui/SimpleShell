@@ -22,12 +22,13 @@ void execCommand(char *argv[]) {
 }
 
 void changeDirectoryCommand(char *parameters[]){
-    if(parameters[1] == NULL){
+    if (parameters[2] != NULL) {
+        printf(" < CD should have at most 1 parameter, but I received more, please try removing the other parameters.\n");
+    } else if (parameters[1] == NULL) {
         chdir(getenv("HOME"));
-    }
-    else if(parameters != NULL){
-       int success = chdir(parameters[1]);
-       if(success == -1) perror("Error");
+    } else if (parameters != NULL) {
+        int success = chdir(parameters[1]);
+        if (success == -1) perror("Error");
 
     }
 

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <limits.h>
 
-void execCommand(char *argv[]) {
+void execCommand(char *parameters[]) {
 
     pid_t pid = fork();
 
@@ -13,7 +13,7 @@ void execCommand(char *argv[]) {
         perror("fork failed");
         exit(1);
     } else if (pid == 0) {
-        execvp(argv[0], argv);
+        execvp(parameters[0], parameters);
         perror("Error");
         exit(1);
     } else {
@@ -52,9 +52,23 @@ void setPathCommand(char *parameters[]) {
     }
 }
 
+void readInput(char *commandArray[]){
+    if (strcmp(commandArray[0], "getpath") == 0)
+        getPathCommand(commandArray);
+    else if (strcmp(commandArray[0], "setpath") == 0)
+        setPathCommand(commandArray);
+    else if (strcmp(commandArray[0], "cd") == 0)
+        changeDirectoryCommand(commandArray);
+    else
+        execCommand(commandArray);
+}
+
 void run(void) {
     chdir(getenv("HOME"));
     char *currentPath[PATH_MAX];
+    char *history[20]; // created a history string array.
+
+    int historyCounter = 0; // created a counter for vacant entries to store commands.
     while (1) {
         getcwd(currentPath, sizeof(currentPath));
         printf("%s> ", currentPath);
@@ -79,18 +93,24 @@ void run(void) {
             token = strtok(NULL, delimiter);
             i++;
         }
+
+
         commandArray[i] = NULL;
+
+        //trying to add all the input line into an entry of history, help please.
+        history[historyCounter] = malloc(sizeof(commandArray)/sizeof(commandArray[0]));
+        for(int i = 0; i < sizeof(commandArray)/sizeof(commandArray[0]); i++){
+            strcat(history[historyCounter], commandArray[i]);
+        }
+        historyCounter++; //incrementing the counter for next vacant entry.
 
         if (commandArray[0] == NULL)
             continue;
-        else if (strcmp(commandArray[0], "getpath") == 0)
-            getPathCommand(commandArray);
-        else if (strcmp(commandArray[0], "setpath") == 0)
-            setPathCommand(commandArray);
-        else if (strcmp(commandArray[0], "cd") == 0)
-            changeDirectoryCommand(commandArray);
-        else
-            execCommand(commandArray);
+        else readInput(commandArray);   //put all the reading input to choose command in a helper function.
 
+    }
+    int length = sizeof(history)/sizeof(history[0]);
+    for(int i = 0; i < length;i++){
+        printf("%s\n",history[i]);
     }
 }

@@ -52,6 +52,14 @@ void setPathCommand(char *parameters[]) {
     }
 }
 
+void printHistory(char * history){
+    int i = 0;
+    while(history[i] != NULL){
+        printf("%s\n", *(history + i));
+        i++;
+    }
+}
+
 void readInput(char *commandArray[]){
     if (strcmp(commandArray[0], "getpath") == 0)
         getPathCommand(commandArray);
@@ -97,20 +105,57 @@ void run(void) {
 
         commandArray[i] = NULL;
 
-        //trying to add all the input line into an entry of history, help please.
-        history[historyCounter] = malloc(sizeof(commandArray)/sizeof(commandArray[0]));
-        for(int i = 0; i < sizeof(commandArray)/sizeof(commandArray[0]); i++){
-            strcat(history[historyCounter], commandArray[i]);
+        //trying to add all the input line into an entry of history.
+        history[historyCounter] = malloc(sizeof(commandArray)*sizeof(commandArray[0]));
+        int j = 0;
+        while( commandArray[j] != NULL){
+            if(strcspn(commandArray[j], "!") == 0) break;
+            if(strcspn(commandArray[j], "!") != 0)strcat(history[historyCounter], commandArray[j]);
+            if(commandArray[j+1] != NULL) strcat(history[historyCounter], " ");
+            j++;
         }
-        historyCounter++; //incrementing the counter for next vacant entry.
 
-        if (commandArray[0] == NULL)
-            continue;
+
+        if(historyCounter == sizeof(history)/sizeof(history[0]) - 1) historyCounter = 0;
+       else historyCounter++; //incrementing the counter for next vacant entry.
+
+
+
+        if (commandArray[0] == NULL) continue;
+        else if(strcmp(commandArray[0], "history") == 0){   // printing history
+            int i = 0;
+            while(history[i] != NULL){
+                printf("%s\n", *(history + i));
+                i++;
+            }
+
+        }
+        // here is the issue with !<no>
+        else if(strcspn(commandArray[0], "!") == 0){
+            int historyIndex;
+            // char charIndex = ? command array[0] = !2 -> 2
+            //  printf("%c", charIndex);
+           //   historyIndex = charIndex - '0';
+            printf("%d", historyIndex);
+            token = strtok(history[historyIndex], " ");
+           char * commandInvoked[50];
+           int i = 0;
+           while(token != NULL){
+               commandInvoked[i] = token;
+               token = strtok(NULL, " ");
+               i++;
+           } // post processing working just missing the right index.
+           int j = 0;
+           while(commandInvoked[j] != NULL){
+               printf("%s\n", *(history + j));
+               j++;
+           }
+            execCommand(commandInvoked);
+        }
+
         else readInput(commandArray);   //put all the reading input to choose command in a helper function.
 
     }
-    int length = sizeof(history)/sizeof(history[0]);
-    for(int i = 0; i < length;i++){
-        printf("%s\n",history[i]);
-    }
+
+
 }

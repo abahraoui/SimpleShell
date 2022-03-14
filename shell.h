@@ -7,6 +7,8 @@
 
 void run();
 
-void execCommand(char *inputArr[]);
+void execCommand(char *parameters[]);
+
+void readInput(char *parameters[]);
 
 #endif //CS210_SIMPLE_AMOGUS_SHELL_MAIN_H

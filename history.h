@@ -14,4 +14,8 @@ void executeNthCommand(char *commandArray[50]);
 
 void executeInverseNthCommand(char *commandArray[50]);
 
+void executeHistoryInvocation(char *commandArray[50]);
+
+int getNumberFromString(char *input);
+
 #endif

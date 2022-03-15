@@ -45,14 +45,14 @@ void readInput(char *commandArray[]) {
         setPathCommand(commandArray);
     else if (strcmp(commandArray[0], "cd") == 0)
         changeDirectoryCommand(commandArray);
-    else if (strcmp(commandArray[0], "history") == 0)
+    else if (strcmp(commandArray[0], "history") == 0) {
+        if (commandArray[1] != NULL) {
+            printf("The history command does not allow any parameters.\n");
+            return;
+        }
         printHistory();
-    else if (strcmp(commandArray[0], "!!") == 0)
-        executePreviousCommand();
-    else if (strncmp(commandArray[0], "!-", 2) == 1) // !-<no>
-        executeInverseNthCommand(commandArray);
-    else if (strncmp(commandArray[0], "!", 1) == 0) // !<no>
-        executeNthCommand(commandArray);
+    } else if (commandArray[0][0] == '!')
+        executeHistoryInvocation(commandArray);
     else
         execCommand(commandArray);
 }

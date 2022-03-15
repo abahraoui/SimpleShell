@@ -7,9 +7,30 @@ const int HISTORY_SIZE = 20;
 char *history[20][50]; /// array of separated strings
 int historyCounter = 0; /// created a counter for vacant entries to store commands.
 
+/**
+ *
+ * @param input a non-negative number
+ * @return -1 if its an invalid input, otherwise, the number itself
+ */
+int getPosNumberFromString(char *input) {
+    char *ptr;
+    int result = strtol(input, &ptr, 10);
+    if (result > 0) {
+        if (result > HISTORY_SIZE)
+            printf("The history only holds %d commands.\n", HISTORY_SIZE);
+        else
+            return result;
+    } else {
+        printf("Number %d is not allowed.\n", result);
+    }
+    return -1;
+}
+
 void addToHistory(char *commandArray[50]) {
     ///trying to add all the input line into an entry of history.
     int i = 0;
+    if (commandArray[0] != NULL && commandArray[0][0] == '!')
+        return;
     while (commandArray[i] != NULL) {
         history[historyCounter][i] = malloc(sizeof(commandArray[i]));
         strcpy(history[historyCounter][i], commandArray[i]);
@@ -36,36 +57,38 @@ void printHistory() {
 }
 
 void executePreviousCommand() {
-    int previousCommandIndex = (historyCounter + HISTORY_SIZE - 2) % HISTORY_SIZE;
+    int previousCommandIndex = (historyCounter + HISTORY_SIZE - 1) % HISTORY_SIZE;
     if (history[previousCommandIndex][0] == NULL) {   /// looking for if the invocation is valid and can be executed.
         printf("%s\n", "There is no previous command.");
         return;
-    }
-    while (strcmp(history[previousCommandIndex][0], "!!") == 0) {
-        previousCommandIndex = (previousCommandIndex + HISTORY_SIZE - 1) % HISTORY_SIZE;
-        if (history[previousCommandIndex][0] ==
-            NULL) {   /// looking for if the invocation is valid and can be executed.
-            printf("%s\n", "There is no previous command.");
-            return;
-        }
     }
     readInput(history[previousCommandIndex]); /// executing the command
 }
 
 void executeNthCommand(char *commandArray[50]) {
-    const char *token;
     int historyIndex;
+    char *ptr;
     const char *delimiter = "!";   /// getting right index
     commandArray[0] = strtok(commandArray[0], delimiter);
-
-    historyIndex = atoi(commandArray[0]);
+    historyIndex = strtol(commandArray[0], ptr, 10);
     historyIndex -= 1;
     /// checking if it's a right invoke.
-    if ((history[historyIndex] == NULL) || (historyIndex == historyCounter)) {
+    if ((history[historyIndex][0] == NULL) || (historyIndex == historyCounter) || historyIndex < 0 ||
+        historyIndex >= (historyCounter - 1)) {
         printf("%s\n", "Invocation invalid, try again.");
         return;
     }
 
+    readInput(history[historyIndex]);
+}
+
+void executeNthCommandInt(int number) {
+    int historyIndex = number - 1;
+    /// checking if it's a right invoke.
+    if ((history[historyIndex][0] == NULL) || historyIndex > (historyCounter - 1)) {
+        printf("There is no command at position %d, try again.\n", number);
+        return;
+    }
     readInput(history[historyIndex]);
 }
 
@@ -101,5 +124,36 @@ void executeInverseNthCommand(char *commandArray[50]) {
                 i++;
             }
         }
+    }
+}
+
+void executeInverseNthCommandInt(int number) {
+    const char *token;
+    int historyIndex = historyCounter - number;
+    /// looking for if the invocation is valid and can be executed.
+    if ((history[historyIndex] == NULL)) {
+        printf("The history does not have %d records.\n", number);
+        return;
+    }
+    readInput(history[historyIndex]);
+
+}
+
+
+void executeHistoryInvocation(char *commandArray[50]) {
+    if (commandArray[1] != NULL) {
+        printf("History invocation does not allow any parameters.\n");
+        return;
+    }
+    if (strcmp(commandArray[0], "!!") == 0) // !!
+        executePreviousCommand();
+    else if (commandArray[0][0] == '!' && commandArray[0][1] == '-') {// !-<no> !-2 --> "2" --> 2 --> -2
+        int inputNumber = getPosNumberFromString(commandArray[0] + 2);
+        if (inputNumber == -1) return;
+        executeInverseNthCommandInt(inputNumber);
+    } else {
+        int inputNumber = getPosNumberFromString(commandArray[0] + 1);
+        if (inputNumber == -1) return;
+        executeNthCommandInt(inputNumber);
     }
 }

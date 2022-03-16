@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "shell.h"
 
-const int HISTORY_SIZE = 20;
+const int historySize = 20;
 char *history[20][50]; /// array of separated strings
 int historyCounter = 0; /// created a counter for vacant entries to store commands.
 
@@ -16,8 +16,8 @@ int getPosNumberFromString(char *input) {
     char *ptr;
     int result = strtol(input, &ptr, 10);
     if (result > 0) {
-        if (result > HISTORY_SIZE)
-            printf("The history only holds %d commands.\n", HISTORY_SIZE);
+        if (result > historySize)
+            printf("The history only holds %d commands.\n", historySize);
         else
             return result;
     } else {
@@ -28,20 +28,33 @@ int getPosNumberFromString(char *input) {
 
 void addToHistory(char *commandArray[50]) {
     ///trying to add all the input line into an entry of history.
-    int i = 0;
+
     if (commandArray[0] != NULL && commandArray[0][0] == '!')
         return;
-    while (commandArray[i] != NULL) {
-        history[historyCounter][i] = malloc(sizeof(commandArray[i]));
-        strcpy(history[historyCounter][i], commandArray[i]);
-        i++;
+    if (historyCounter == historySize){
+        for(int j = 0; j < historySize-1; j++){
+            int i = 0;
+            while (history[j+1][i] != NULL) {
+                history[j][i] = malloc(sizeof(history[j+1][i]));
+                strcpy(history[j][i], history[j+1][i]);
+                i++;
+            }
+        }
+        historyCounter--;
     }
+    int index = 0;
+    while (commandArray[index] != NULL) {
+        history[historyCounter][index] = malloc(sizeof(commandArray[index]));
+        strcpy(history[historyCounter][index], commandArray[index]);
+        index++;
+    }
+    if (historyCounter<historySize)
+        historyCounter++;
+
     ///incrementing the counter for next vacant entry.
     /// keeping it circular by checking the counter vs size of array.
-    if (historyCounter == sizeof(history) / sizeof(history[0]) - 1)
-        historyCounter = 0; ///kinda sus to me, idk if it works
-    else historyCounter++;
 }
+
 
 void printHistory() {
     int i = 0;
@@ -57,29 +70,12 @@ void printHistory() {
 }
 
 void executePreviousCommand() {
-    int previousCommandIndex = (historyCounter + HISTORY_SIZE - 1) % HISTORY_SIZE;
+    int previousCommandIndex = (historyCounter + historySize - 1) % historySize;
     if (history[previousCommandIndex][0] == NULL) {   /// looking for if the invocation is valid and can be executed.
         printf("%s\n", "There is no previous command.");
         return;
     }
     readInput(history[previousCommandIndex]); /// executing the command
-}
-
-void executeNthCommand(char *commandArray[50]) {
-    int historyIndex;
-    char *ptr;
-    const char *delimiter = "!";   /// getting right index
-    commandArray[0] = strtok(commandArray[0], delimiter);
-    historyIndex = strtol(commandArray[0], ptr, 10);
-    historyIndex -= 1;
-    /// checking if it's a right invoke.
-    if ((history[historyIndex][0] == NULL) || (historyIndex == historyCounter) || historyIndex < 0 ||
-        historyIndex >= (historyCounter - 1)) {
-        printf("%s\n", "Invocation invalid, try again.");
-        return;
-    }
-
-    readInput(history[historyIndex]);
 }
 
 void executeNthCommandInt(int number) {
@@ -92,46 +88,11 @@ void executeNthCommandInt(int number) {
     readInput(history[historyIndex]);
 }
 
-void executeInverseNthCommand(char *commandArray[50]) {
-    const char *token;
-    int historyIndex;
-    const char *delimiter = "!-";
-    commandArray[0] = strtok(commandArray[0], delimiter); /// parsing to get the right index
-    historyIndex = atoi(commandArray[0]);
-    historyIndex = historyCounter - historyIndex;
-    /// looking for if the invocation is valid and can be executed.
-    if ((history[historyIndex] == NULL) || (historyIndex == historyCounter)) {
-        printf("%s\n", "Invocation invalid, try again.");
-        return;
-    }
-    /// looking for whether it's a valid index to invoke.
-    if ((historyIndex >= 0) && (historyIndex < 20)) {
-        if (strcmp(history[historyIndex], "history") != 0) {
-            token = strtok(history[historyIndex], " ");
-            char *commandInvoked[50];
-            int i = 0;
-            while (token != NULL) {  ///usual parsing, dont like multiple parameter strings.
-                commandInvoked[i] = token;
-
-                token = strtok(NULL, " ");
-                i++;
-            }
-            readInput(commandInvoked);
-        } else {
-            int i = 0; /// usual printing if it's asked for.
-            while (history[i] != NULL) {
-                printf("%d %s\n", i + 1, *(history + i));
-                i++;
-            }
-        }
-    }
-}
-
 void executeInverseNthCommandInt(int number) {
     const char *token;
     int historyIndex = historyCounter - number;
     /// looking for if the invocation is valid and can be executed.
-    if ((history[historyIndex] == NULL)) {
+    if ((history[historyIndex] == NULL) || historyIndex<0) {
         printf("The history does not have %d records.\n", number);
         return;
     }

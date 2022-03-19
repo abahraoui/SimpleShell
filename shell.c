@@ -59,12 +59,13 @@ void readInput(char *commandArray[]) {
 
 
 void run(void) {
+    loadHistory();
     chdir(getenv("HOME"));
     char *currentPath[PATH_MAX];
     while (1) {
         getcwd(currentPath, sizeof(currentPath));
         printf("%s> ", currentPath);
-        //printf(" %d ", historyCounter); ///printing the history counter to keep up.
+
 
         char *d_buffer[512];
 
@@ -81,7 +82,7 @@ void run(void) {
         /* walk through other tokens */
         int i = 0;
         while (token != NULL) {
-            //printf(" %s%s\n", "<", token);
+
             commandArray[i] = token;
             token = strtok(NULL, delimiter);
             i++;
@@ -95,4 +96,5 @@ void run(void) {
 
         readInput(commandArray);   ///put all the reading input to choose command in a helper function.
     }
+    saveHistory();
 }

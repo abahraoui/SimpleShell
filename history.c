@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "shell.h"
 
 const int historySize = 20;
@@ -117,4 +118,52 @@ void executeHistoryInvocation(char *commandArray[50]) {
         if (inputNumber == -1) return;
         executeNthCommandInt(inputNumber);
     }
+}
+
+void saveHistory(){
+    chdir("/home/gbb20158/CLionProjects/Shell9");
+    FILE *saveFile;
+    saveFile = fopen("history.hist_list", "wb");
+
+    for(int i = 0; i<historySize; i++){
+        if(*history[i] != NULL){
+            int j = 0;
+         while(history[i][j] != NULL){
+             fputs(*(history[i] + j),saveFile);
+             fputs(" ", saveFile);
+             j++;
+         }
+
+         fputs("\n", saveFile);
+
+
+        }
+
+
+
+    }
+
+
+
+    fclose(saveFile);
+}
+
+void loadHistory(){
+    chdir("/home/gbb20158/CLionProjects/Shell9");
+    FILE *saveFile;
+    saveFile = fopen("history.hist_list", "rb");
+    char buffer[50];
+    char buffer2[50];
+  //  while(fscanf(saveFile,"%s", buffer)!= EOF) fscanf(saveFile,"%s", buffer);
+    fgets(buffer, 50, saveFile);
+    fgets(buffer2, 50, saveFile);
+    printf("%s %s\n",buffer, buffer2 );
+
+
+   /* for(int i = 0; i<historySize; i++){
+        if(fscanf(saveFile, "%[^\n]", history[i]) > 0) fscanf(saveFile, "%[^\n]", history[i]);
+
+
+    }*/
+
 }

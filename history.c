@@ -7,6 +7,8 @@
 const int historySize = 20;
 char *history[20][50]; /// array of separated strings
 int historyCounter = 0; /// created a counter for vacant entries to store commands.
+char savingPath[256];
+
 
 /**
  *
@@ -121,7 +123,9 @@ void executeHistoryInvocation(char *commandArray[50]) {
 }
 
 void saveHistory(){
-    chdir("/home/gbb20158/CLionProjects/Shell9");
+    chdir(savingPath);
+    chdir("..");
+
     FILE *saveFile;
     saveFile = fopen("history.hist_list", "wb");
 
@@ -148,8 +152,11 @@ void saveHistory(){
     fclose(saveFile);
 }
 
-void loadHistory(){
-    chdir("/home/gbb20158/CLionProjects/Shell9");
+void loadHistory(){char cwd[256];
+    getcwd(savingPath, sizeof(savingPath));
+
+    chdir("..");
+
     FILE *saveFile;
     saveFile = fopen("history.hist_list", "rb");
     char buffer[50];
@@ -165,5 +172,5 @@ void loadHistory(){
 
 
     }*/
-
+    fclose(saveFile);
 }

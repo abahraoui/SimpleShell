@@ -127,50 +127,82 @@ void saveHistory(){
     chdir("..");
 
     FILE *saveFile;
-    saveFile = fopen("history.hist_list", "wb");
-
-    for(int i = 0; i<historySize; i++){
-        if(*history[i] != NULL){
-            int j = 0;
-         while(history[i][j] != NULL){
-             fputs(*(history[i] + j),saveFile);
-             fputs(" ", saveFile);
-             j++;
-         }
-
-         fputs("\n", saveFile);
+    if( access( "history.hist_list" , F_OK ) == 0 ) {
+        saveFile = fopen("history.hist_list", "wb");
 
 
-        }
+            for(int i = 0; i<historySize; i++){
+                if(*history[i] != NULL){
+                    int j = 0;
+                    while(history[i][j] != NULL){
+                        fputs(*(history[i] + j),saveFile);
+                        fputs(" ", saveFile);
+                        j++;
+                    }
+
+                    fputs("\n", saveFile);
+
+
+                }
 
 
 
+            }
+
+
+
+            fclose(saveFile);
+        }else printf("File not found or doesn't exist.");
     }
 
 
-
-    fclose(saveFile);
-}
-
-void loadHistory(){char cwd[256];
+void loadHistory(){
     getcwd(savingPath, sizeof(savingPath));
 
     chdir("..");
 
     FILE *saveFile;
-    saveFile = fopen("history.hist_list", "rb");
-    char buffer[50];
-    char buffer2[50];
-  //  while(fscanf(saveFile,"%s", buffer)!= EOF) fscanf(saveFile,"%s", buffer);
-    fgets(buffer, 50, saveFile);
-    fgets(buffer2, 50, saveFile);
-    printf("%s %s\n",buffer, buffer2 );
+    if( access( "history.hist_list" , F_OK ) == 0 ) {
+    saveFile = fopen("history.hist_list", "r");
+    int prev = ftell(saveFile);
+    fseek(saveFile,0,SEEK_END);
+    int size = ftell(saveFile);
+    fseek(saveFile,prev,SEEK_SET);
+
+    if(size > 0){
+        char *buffer[50];
+        char *ptr[51];
+        char c;
+        while((c = fgetc(saveFile)) != EOF) {
+
+            *buffer = NULL;
+            fgets(buffer,50, saveFile);
+            ptr[0] = c;
+            strcat(ptr,buffer);
+
+            char *commandArray[50];
+            const char *delimiter = " ;\t|><&\n";
+            const char *token;
+            /* get the first token */
+            token = strtok(ptr, delimiter);
+            /* walk through other tokens */
+            int i = 0;
+            while (token != NULL) {
+
+                commandArray[i] = token;
+                token = strtok(NULL, delimiter);
+                i++;
+            }
+
+            commandArray[i] = NULL;
+
+            addToHistory(commandArray);
 
 
-   /* for(int i = 0; i<historySize; i++){
-        if(fscanf(saveFile, "%[^\n]", history[i]) > 0) fscanf(saveFile, "%[^\n]", history[i]);
+        }
 
+        fclose(saveFile);
+    } else printf("%s\n","File is empty");
+    }else printf("File not found or doesn't exist.");
 
-    }*/
-    fclose(saveFile);
 }

@@ -74,7 +74,7 @@ void run(void) {
         if (strcmp(d_buffer, "exit\n") == 0)
             break;
 
-        char *commandArray[50]; // Stage 2 change, String array which store commands.
+        char *commandArray[50];
         const char *delimiter = " ;\t|><&\n";
         const char *token;
         /* get the first token */

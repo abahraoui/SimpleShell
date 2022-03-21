@@ -6,4 +6,4 @@ set(CMAKE_C_STANDARD 11)
 include_directories(.)
 
 add_executable(Shell9
-        main.c shell.c history.c functions.c)
+        main.c shell.c history.c functions.c aliases.c linkedList.c)

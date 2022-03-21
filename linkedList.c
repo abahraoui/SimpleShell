@@ -246,6 +246,7 @@ List load_list(char *fileName) {
         while (fgets(line, sizeof(line), file)) {
             char *curLine = malloc((strlen(line) - 1) * sizeof(char));
             strncpy(curLine, line, strlen(line) - 1);
+            curLine[strlen(line) - 1] = '\0';
             push(list, curLine);
         }
         fclose(file);

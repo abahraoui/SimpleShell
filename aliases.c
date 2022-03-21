@@ -46,5 +46,33 @@ void addToAlias(char **commandArray) {
     push(aliases, parsedInput);
 }
 
+List aliasKeys() {
+    List keys = new_list();
+    for (int i = 0; i < size(aliases); ++i) {
+        char *alias = malloc(sizeof(char) * 512);
+        strcpy(alias, get_at(aliases, i));
+        push(keys, strtok(alias, " "));
+    }
+    return keys;
+}
+
+char *aliasCommand(int index) {
+    char *command = malloc(sizeof(char) * 512);
+    strcpy(command, strstr(get_at(aliases, index), " "));
+    return command;
+}
+
+int tryToRunAliasCommand(char *command) {
+    int indexOfCommand = index_of(aliasKeys(), command);
+    if (indexOfCommand != -1) {
+        char *commands[20];
+        commands[0] = aliasCommand(indexOfCommand) + 1;
+        commands[1] = NULL;
+
+        readInput(commands);
+        return 1;
+    }
+    return -1;
+}
 
 

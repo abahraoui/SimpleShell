@@ -11,4 +11,6 @@ void loadAliases();
 
 void saveAliases();
 
+int tryToRunAliasCommand(char *command);
+
 #endif

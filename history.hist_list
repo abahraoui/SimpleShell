@@ -7,3 +7,7 @@ history
 cd /home 
 cd .. 
 history 
+alias yermaw pwd 
+yermaw 
+alias bruhmomento pwd 
+bruhmomento 

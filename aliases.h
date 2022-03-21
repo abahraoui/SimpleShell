@@ -13,4 +13,6 @@ void saveAliases();
 
 int tryToRunAliasCommand(char *command);
 
+void removeAlias(char **command) ;
+
 #endif

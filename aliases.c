@@ -40,7 +40,6 @@ void addToAlias(char **commandArray) {
         if (commandArray[i + 1] != NULL)
             strcat(parsedInput, " ");
         i++;
-        printf("%s\n", parsedInput);
     }
     strcat(parsedInput, "\0");
     push(aliases, parsedInput);
@@ -56,6 +55,33 @@ List aliasKeys() {
     return keys;
 }
 
+List aliasValues() {
+    List values = new_list();
+    for (int i = 0; i < size(aliases); ++i) {
+        char *alias = malloc(sizeof(char) * 512);
+        strcpy(alias, get_at(aliases, i));
+        char *commandArray[50];
+        const char *delimiter = " ;\t|><&\n";
+        const char *token;
+        /* get the first token */
+        token = strtok(alias, " ");
+        /* walk through other tokens */
+        int i = 0;
+        while (token != NULL) {
+            if ()
+            commandArray[i] = token;
+            token = strtok(NULL, delimiter);
+            i++;
+        }
+        commandArray[i] = NULL;
+
+
+        push(values, strtok(alias, " "));
+
+    }
+    return values;
+}
+
 char *aliasCommand(int index) {
     char *command = malloc(sizeof(char) * 512);
     strcpy(command, strstr(get_at(aliases, index), " "));
@@ -68,11 +94,46 @@ int tryToRunAliasCommand(char *command) {
         char *commands[20];
         commands[0] = aliasCommand(indexOfCommand) + 1;
         commands[1] = NULL;
-
-        readInput(commands);
+        char *commandArray[50];
+        const char *delimiter = " ;\t|><&\n";
+        const char *token;
+        /* get the first token */
+        token = strtok(commands[0], delimiter);
+        /* walk through other tokens */
+        int i = 0;
+        while (token != NULL) {
+            commandArray[i] = token;
+            token = strtok(NULL, delimiter);
+            i++;
+        }
+        commandArray[i] = NULL;
+        readInput(commandArray);
         return 1;
     }
     return -1;
+}
+
+void removeAlias(char **commandArray) {
+    int i = 1;
+    char *parsedInput = malloc(sizeof(char) * 512);
+    parsedInput[0] = 0;
+    while (commandArray[i] != NULL) {
+        strcat(parsedInput, commandArray[i]);
+        if (commandArray[i + 1] != NULL)
+            strcat(parsedInput, " ");
+        i++;
+    }
+    strcat(parsedInput, "\0");
+    int indexOfCommand = index_of(aliasValues(), parsedInput);
+    if (indexOfCommand != -1) {
+        if(remove_at(aliases, indexOfCommand)!=NULL){
+            printf("Alias has been removed");
+        }
+    }
+    else {
+        printf("Alias does not exist");
+    }
+
 }
 
 

@@ -56,6 +56,8 @@ void readInput(char *commandArray[]) {
         executeHistoryInvocation(commandArray);
     else if (strcmp(commandArray[0], "alias") == 0)
         addToAlias(commandArray);
+    else if (strcmp(commandArray[0], "unalias") == 0)
+        removeAlias(commandArray);
     else {
         if (tryToRunAliasCommand(commandArray[0]) == -1)
             execCommand(commandArray);

@@ -40,7 +40,10 @@ void setPathCommand(char *parameters[]) {
 }
 
 void readInput(char *commandArray[]) {
-    if (strcmp(commandArray[0], "getpath") == 0)
+    if (tryToRunAliasCommand(commandArray[0]) == 1){
+       return;
+    }
+    else if (strcmp(commandArray[0], "getpath") == 0)
         getPathCommand(commandArray);
     else if (strcmp(commandArray[0], "setpath") == 0)
         setPathCommand(commandArray);
@@ -59,8 +62,8 @@ void readInput(char *commandArray[]) {
     else if (strcmp(commandArray[0], "unalias") == 0)
         removeAlias(commandArray);
     else {
-        if (tryToRunAliasCommand(commandArray[0]) == -1)
-            execCommand(commandArray);
+        execCommand(commandArray);
+
     }
 }
 

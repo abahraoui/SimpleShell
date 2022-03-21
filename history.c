@@ -7,8 +7,6 @@
 const int historySize = 20;
 char *history[20][50]; /// array of separated strings
 int historyCounter = 0; /// created a counter for vacant entries to store commands.
-char savingPath[256];
-
 
 /**
  *
@@ -63,7 +61,7 @@ void addToHistory(char *commandArray[50]) {
 void printHistory() {
     int i = 0;
     char curCommand[512];
-    while (history[i][0] != NULL) {
+    while (history[i][0] != NULL && i < historySize) {
         strcpy(curCommand, "");
         int j = 0;
         while (history[i][j] != NULL)
@@ -142,13 +140,11 @@ void saveHistory() {
             }
         }
         fclose(saveFile);
-    } else printf("File not found or doesn't exist.");
+    } else printf("File not found or doesn't exist.\n");
 }
 
 
 void loadHistory() {
-    getcwd(savingPath, sizeof(savingPath));
-
     chdir("..");
 
     FILE *saveFile;

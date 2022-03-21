@@ -5,6 +5,7 @@
 #include <limits.h>
 #include "history.h"
 #include "shell.h"
+#include "aliases.h"
 
 
 void changeDirectoryCommand(char *parameters[]) {
@@ -53,13 +54,17 @@ void readInput(char *commandArray[]) {
         printHistory();
     } else if (commandArray[0][0] == '!')
         executeHistoryInvocation(commandArray);
+    else if (strcmp(commandArray[0], "alias") == 0)
+        addToAlias(commandArray);
     else
         execCommand(commandArray);
 }
 
 
 void run(void) {
+    getcwd(savingPath, sizeof(savingPath));
     loadHistory();
+    loadAliases();
     chdir(getenv("HOME"));
     char *currentPath[PATH_MAX];
     while (1) {
@@ -97,4 +102,5 @@ void run(void) {
         readInput(commandArray);   ///put all the reading input to choose command in a helper function.
     }
     saveHistory();
+    saveAliases();
 }

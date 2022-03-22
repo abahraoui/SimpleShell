@@ -40,7 +40,7 @@ void setPathCommand(char *parameters[]) {
 }
 
 void readInput(char *commandArray[]) {
-    if (tryToRunAliasCommand(commandArray[0]) == 1){
+    if (tryToRunAliasCommand(commandArray) == 1){
        return;
     }
     else if (strcmp(commandArray[0], "getpath") == 0)
@@ -69,10 +69,10 @@ void readInput(char *commandArray[]) {
 
 
 void run(void) {
+    chdir(getenv("HOME"));
     getcwd(savingPath, sizeof(savingPath));
     loadHistory();
     loadAliases();
-    chdir(getenv("HOME"));
     char *currentPath[PATH_MAX];
     while (1) {
         getcwd(currentPath, sizeof(currentPath));

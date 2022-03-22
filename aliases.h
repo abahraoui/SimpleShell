@@ -11,7 +11,7 @@ void loadAliases();
 
 void saveAliases();
 
-int tryToRunAliasCommand(char *command);
+int tryToRunAliasCommand(char *command[]);
 
 void removeAlias(char **command) ;
 

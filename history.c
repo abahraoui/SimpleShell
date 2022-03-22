@@ -7,6 +7,7 @@
 const int historySize = 20;
 char *history[20][50]; /// array of separated strings
 int historyCounter = 0; /// created a counter for vacant entries to store commands.
+char *historyFileName = ".hist_list";
 
 /**
  *
@@ -123,33 +124,30 @@ void executeHistoryInvocation(char *commandArray[50]) {
 
 void saveHistory() {
     chdir(savingPath);
-    chdir("..");
-
     FILE *saveFile;
-    if (access("history.hist_list", F_OK) == 0) {
-        saveFile = fopen("history.hist_list", "wb");
-        for (int i = 0; i < historySize; i++) {
-            if (*history[i] != NULL) {
-                int j = 0;
-                while (history[i][j] != NULL) {
-                    fputs(*(history[i] + j), saveFile);
-                    fputs(" ", saveFile);
-                    j++;
-                }
-                fputs("\n", saveFile);
+    if (access(historyFileName, F_OK) != 0) {
+        printf("History file was not found or doesn't exist, creating a new one at %s/..\n", savingPath);
+    }
+    saveFile = fopen(historyFileName, "wb");
+    for (int i = 0; i < historySize; i++) {
+        if (*history[i] != NULL) {
+            int j = 0;
+            while (history[i][j] != NULL) {
+                fputs(*(history[i] + j), saveFile);
+                fputs(" ", saveFile);
+                j++;
             }
+            fputs("\n", saveFile);
         }
-        fclose(saveFile);
-    } else printf("File not found or doesn't exist.\n");
+    }
+    fclose(saveFile);
 }
 
 
 void loadHistory() {
-    chdir("..");
-
     FILE *saveFile;
-    if (access("history.hist_list", F_OK) == 0) {
-        saveFile = fopen("history.hist_list", "r");
+    if (access(historyFileName, F_OK) == 0) {
+        saveFile = fopen(historyFileName, "r");
         int prev = ftell(saveFile);
         fseek(saveFile, 0, SEEK_END);
         int size = ftell(saveFile);
@@ -182,8 +180,9 @@ void loadHistory() {
                 commandArray[i] = NULL;
                 addToHistory(commandArray);
             }
+            printf("loaded history correctly:\n");
+            printHistory();
             fclose(saveFile);
         } else printf("%s\n", "File is empty");
-    } else printf("File not found or doesn't exist.");
-
+    } else printf("History file not found or doesn't exist.\n");
 }

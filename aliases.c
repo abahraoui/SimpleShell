@@ -99,28 +99,21 @@ int tryToRunAliasCommand(char *command[]) {
             token = strtok(NULL, delimiter);
             i++;
         }
-        commandArray[i] = NULL;
+//        commandArray[i] = NULL;
 
 
 ////this code right here is my attempt of making it take params, however i have to go to do work and it is not working.
 ////if you try to solve this dont worry about it, delete only if you make it work with params
 
-//        printf("%s",command[1]);
-//        int j = 1;
-//        int ext_index =0;
-//        while (command[j] != NULL){
-//            token = strtok(command[j], delimiter);
-//            int index = 0;
-//            while (token != NULL) {
-//                commandArray[index] = token;
-//                token = strtok(NULL, delimiter);
-//                index++;
-//            }
-//            j++;
-//            ext_index = ext_index+index;
-//        }
-//        commandArray[i+ext_index] = NULL;
-//
+        printf("%s",command[1]);
+        int j = 1;
+        while (command[j] != NULL){
+            commandArray[i] = command[j];
+            j++;
+            i++;
+        }
+        commandArray[i] = NULL;
+
 
         readInput(commandArray);
         return 1;

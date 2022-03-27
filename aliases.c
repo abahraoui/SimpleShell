@@ -99,13 +99,7 @@ int tryToRunAliasCommand(char *command[]) {
             token = strtok(NULL, delimiter);
             i++;
         }
-//        commandArray[i] = NULL;
 
-
-////this code right here is my attempt of making it take params, however i have to go to do work and it is not working.
-////if you try to solve this dont worry about it, delete only if you make it work with params
-
-        printf("%s",command[1]);
         int j = 1;
         while (command[j] != NULL){
             commandArray[i] = command[j];
@@ -114,6 +108,14 @@ int tryToRunAliasCommand(char *command[]) {
         }
         commandArray[i] = NULL;
 
+        int print =0;
+        char tempStr[100] = "";
+        while (commandArray[print] != NULL){
+            strcat(tempStr, commandArray[print]);
+            strcat(tempStr, " ");
+            print++;
+        }
+        printf("The Alias you are executing is: %s \n", tempStr);
 
         readInput(commandArray);
         return 1;

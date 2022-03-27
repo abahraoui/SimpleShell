@@ -17,13 +17,19 @@ char *historyFileName = ".hist_list";
 int getPosNumberFromString(char *input) {
     char *ptr;
     int result = strtol(input, &ptr, 10);
+    printf("%d \n",result);
     if (result > 0) {
-        if (result > historySize)
+        if (result > historySize){
             printf("The history only holds %d commands.\n", historySize);
-        else
+        }
+        else if (result > historyCounter){
+            printf("The array is currently only holding %d commands.\n", historyCounter);
+        }
+        else{
             return result;
+        }
     } else {
-        printf("Number %d is not allowed.\n", result);
+            printf("History invocations only take numbers 1 - 20 as parameters.\n");
     }
     return -1;
 }
@@ -34,6 +40,11 @@ void addToHistory(char *commandArray[50]) {
     if (commandArray[0] != NULL && commandArray[0][0] == '!')
         return;
     if (historyCounter == historySize) {
+        int k =0;
+        while (history[0][k] != NULL) {
+            history[0][k] = NULL;
+            k++;
+        }
         for (int j = 0; j < historySize - 1; j++) {
             int i = 0;
             while (history[j + 1][i] != NULL) {
@@ -65,8 +76,10 @@ void printHistory() {
     while (history[i][0] != NULL && i < historySize) {
         strcpy(curCommand, "");
         int j = 0;
-        while (history[i][j] != NULL)
-            strcat(curCommand, history[i][j++]);
+        while (history[i][j] != NULL){
+        strcat(curCommand, history[i][j++]);
+        strcat(curCommand, " ");
+        }
         printf("%d %s\n", i + 1, curCommand);
         i++;
     }
@@ -78,6 +91,14 @@ void executePreviousCommand() {
         printf("%s\n", "There is no previous command.");
         return;
     }
+    int print =0;
+    char tempStr[100] = "";
+    while (history[previousCommandIndex][print] != NULL){
+        strcat(tempStr, history[previousCommandIndex][print]);
+        strcat(tempStr, " ");
+        print++;
+    }
+    printf("The history command you are executing is: %s \n", tempStr);
     readInput(history[previousCommandIndex]); /// executing the command
 }
 
@@ -88,6 +109,14 @@ void executeNthCommandInt(int number) {
         printf("There is no command at position %d, try again.\n", number);
         return;
     }
+    int print =0;
+    char tempStr[100] = "";
+    while (history[historyIndex][print] != NULL){
+        strcat(tempStr, history[historyIndex][print]);
+        strcat(tempStr, " ");
+        print++;
+    }
+    printf("The history command you are executing is: %s \n", tempStr);
     readInput(history[historyIndex]);
 }
 
@@ -99,6 +128,14 @@ void executeInverseNthCommandInt(int number) {
         printf("The history does not have %d records.\n", number);
         return;
     }
+    int print =0;
+    char tempStr[100] = "";
+    while (history[historyIndex][print] != NULL){
+        strcat(tempStr, history[historyIndex][print]);
+        strcat(tempStr, " ");
+        print++;
+    }
+    printf("The history command you are executing is: %s \n", tempStr);
     readInput(history[historyIndex]);
 
 }
@@ -172,7 +209,6 @@ void loadHistory() {
                 /* walk through other tokens */
                 int i = 0;
                 while (token != NULL) {
-
                     commandArray[i] = token;
                     token = strtok(NULL, delimiter);
                     i++;

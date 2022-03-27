@@ -6,7 +6,7 @@
 #include "history.h"
 #include "shell.h"
 #include "aliases.h"
-
+int numberOfTimes = 0;
 
 void changeDirectoryCommand(char *parameters[]) {
     if (parameters[2] != NULL) {
@@ -40,6 +40,12 @@ void setPathCommand(char *parameters[]) {
 }
 
 void readInput(char *commandArray[]) {
+    numberOfTimes++;
+    if (numberOfTimes > 10){
+        printf("You either have entered an infinite loop or tried to chain more than 10 commands, halting current chain of commands!\n");
+        numberOfTimes=0;
+        return;
+    }
     if (tryToRunAliasCommand(commandArray) == 1){
        return;
     }
@@ -63,8 +69,8 @@ void readInput(char *commandArray[]) {
         removeAlias(commandArray);
     else {
         execCommand(commandArray);
-
     }
+    numberOfTimes = 0;
 }
 
 

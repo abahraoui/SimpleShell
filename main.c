@@ -22,7 +22,7 @@ void restoreOriginalPath() {
 
 int main(void) {
     saveOriginalPath();
-    printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the shell");
+    printf("%s\n", "> Welcome to the CS210 Shell! Type exit or CTRL+D to exit the shell");
     run();
     printf("\nExiting...\n");
     restoreOriginalPath();

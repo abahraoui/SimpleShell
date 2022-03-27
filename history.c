@@ -17,7 +17,6 @@ char *historyFileName = ".hist_list";
 int getPosNumberFromString(char *input) {
     char *ptr;
     int result = strtol(input, &ptr, 10);
-    printf("%d \n",result);
     if (result > 0) {
         if (result > historySize){
             printf("The history only holds %d commands.\n", historySize);
@@ -195,7 +194,6 @@ void loadHistory() {
             char *ptr[51];
             char c;
             while ((c = fgetc(saveFile)) != EOF) {
-
                 *buffer = NULL;
                 fgets(buffer, 50, saveFile);
                 ptr[0] = c;

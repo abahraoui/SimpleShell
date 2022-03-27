@@ -212,6 +212,8 @@ void loadHistory() {
                     i++;
                 }
                 commandArray[i] = NULL;
+                if (commandArray[0] == NULL)
+                    continue;
                 addToHistory(commandArray);
             }
             printf("loaded history correctly:\n");

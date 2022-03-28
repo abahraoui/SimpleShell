@@ -20,7 +20,13 @@ void loadAliases() {
     if (access(aliasFileName, F_OK) == 0){
 
         aliases = load_list(aliasFileName);
-        printf("loaded aliases correctly:\n");
+        for (int i = 0; i < size(aliases); ++i) {
+            char *trimmedAlias = trimString(strdup(get_at(aliases, i)));
+            char *e = strchr(trimmedAlias, ' ');
+            if (e == NULL)
+                remove_at(aliases, i--);
+        }
+        printf("Loaded %d aliases correctly from file:\n", size(aliases));
         print_list(aliases);
     }
     else {
@@ -48,9 +54,12 @@ void addToAlias(char **commandArray) {
         printf("The alias command takes either zero or two arguments, but I received less than that. Try alias <name> <command>\n");
         return;
     }
-    if(strcmp(commandArray[1], "unalias") == 0 || strcmp(commandArray[1], "alias") == 0 ){
-        printf("%s\n","You can't use this alias, reserved elsewhere.");
+    if (strcmp(commandArray[1], "unalias") == 0 || strcmp(commandArray[1], "alias") == 0) {
+        printf("%s\n", "You can't use this alias, reserved elsewhere.");
         return;
+    }
+    if (contains(aliasKeys(), commandArray[1])) {
+        printf("%s\n", "Warning, this alias is already mapped. Overwriting...");
     }
 
     char *parsedInput = malloc(sizeof(char) * 512);
@@ -124,6 +133,14 @@ int tryToRunAliasCommand(char *command[]) {
 }
 
 void removeAlias(char **commandArray) {
+    if (commandArray[1] == NULL) {
+        printf("The unalias command takes one parameter, but I received zero. Try unalias <name>\n");
+        return;
+    } else if (commandArray[2] != NULL) {
+        printf("The unalias command takes one parameter, but I received more than that. Try unalias <name>\n");
+        return;
+    }
+
     char *parsedInput = malloc(sizeof(char) * 512);
     parsedInput[0] = 0;
     int i = 1;
@@ -144,10 +161,10 @@ void removeAlias(char **commandArray) {
             check = true;
         }
     }
-    if(check == true){
-        printf("%s\n","Aliases has been removed.");
-    }else {
-        printf("%s\n","Alias does not exist");
+    if (check == true) {
+        printf("Alias \"%s\" has been removed.\n", commandArray[1]);
+    } else {
+        printf("Alias \"%s\" does not exist.\n", commandArray[1]);
     }
 
 }

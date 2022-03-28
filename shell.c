@@ -9,16 +9,16 @@
 int numberOfTimes = 0;
 
 void changeDirectoryCommand(char *parameters[]) {
-    if (parameters[2] != NULL) {
-        printf(" < CD should have at most 1 parameter, but I received more, please try removing the other parameters.\n");
-    } else if (parameters[1] == NULL) {
+    if (parameters[1] == NULL) {
         chdir(getenv("HOME"));
-    } else if (parameters != NULL) {
+    } else if (parameters[2] != NULL) {
+        printf(" < CD should have at most 1 parameter, but I received more, please try removing the other parameters.\n");
+    } else {
         int success = chdir(parameters[1]);
-        if (success == -1) perror("Error");
-
+        char errorMessage[512] = "Error accessing ";
+        strcat(errorMessage, parameters[1]);
+        if (success == -1) perror(errorMessage);
     }
-
 }
 
 void getPathCommand(char *parameters[]) {

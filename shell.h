@@ -13,4 +13,6 @@ void execCommand(char *parameters[]);
 
 void readInput(char *parameters[]);
 
+char *trimString(char *str);
+
 #endif //CS210_SIMPLE_AMOGUS_SHELL_MAIN_H

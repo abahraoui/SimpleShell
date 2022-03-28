@@ -16,7 +16,7 @@ char *historyFileName = ".hist_list";
  */
 int getPosNumberFromString(char *input) {
     char *ptr;
-    int result = strtol(input, &ptr, 10);
+    int result = (int)strtol(input, &ptr, 10);
     if (result > 0) {
         if (result > historySize){
             printf("The history only holds %d commands.\n", historySize);
@@ -39,11 +39,13 @@ void addToHistory(char *commandArray[50]) {
     if (commandArray[0] != NULL && commandArray[0][0] == '!')
         return;
     if (historyCounter == historySize) {
+        ///clear first element
         int k =0;
         while (history[0][k] != NULL) {
             history[0][k] = NULL;
             k++;
         }
+        ///shift array left by 1
         for (int j = 0; j < historySize - 1; j++) {
             int i = 0;
             while (history[j + 1][i] != NULL) {
@@ -55,6 +57,7 @@ void addToHistory(char *commandArray[50]) {
         }
         historyCounter--;
     }
+    ///add to history array
     int index = 0;
     while (commandArray[index] != NULL) {
         history[historyCounter][index] = malloc(sizeof(commandArray[index]));
@@ -65,7 +68,6 @@ void addToHistory(char *commandArray[50]) {
         historyCounter++;
 
     ///incrementing the counter for next vacant entry.
-    /// keeping it circular by checking the counter vs size of array.
 }
 
 
@@ -76,8 +78,8 @@ void printHistory() {
         strcpy(curCommand, "");
         int j = 0;
         while (history[i][j] != NULL){
-        strcat(curCommand, history[i][j++]);
-        strcat(curCommand, " ");
+            strcat(curCommand, history[i][j++]);
+            strcat(curCommand, " ");
         }
         printf("%d %s\n", i + 1, curCommand);
         i++;
@@ -120,7 +122,6 @@ void executeNthCommandInt(int number) {
 }
 
 void executeInverseNthCommandInt(int number) {
-    const char *token;
     int historyIndex = historyCounter - number;
     /// looking for if the invocation is valid and can be executed.
     if ((history[historyIndex] == NULL) || historyIndex < 0) {
@@ -136,7 +137,6 @@ void executeInverseNthCommandInt(int number) {
     }
     printf("The history command you are executing is: %s \n", tempStr);
     readInput(history[historyIndex]);
-
 }
 
 
@@ -149,11 +149,13 @@ void executeHistoryInvocation(char *commandArray[50]) {
         executePreviousCommand();
     else if (commandArray[0][0] == '!' && commandArray[0][1] == '-') {// !-<no> !-2 --> "2" --> 2 --> -2
         int inputNumber = getPosNumberFromString(commandArray[0] + 2);
-        if (inputNumber == -1) return;
+        if (inputNumber == -1)
+            return;
         executeInverseNthCommandInt(inputNumber);
     } else {
         int inputNumber = getPosNumberFromString(commandArray[0] + 1);
-        if (inputNumber == -1) return;
+        if (inputNumber == -1)
+            return;
         executeNthCommandInt(inputNumber);
     }
 }
@@ -184,9 +186,9 @@ void loadHistory() {
     FILE *saveFile;
     if (access(historyFileName, F_OK) == 0) {
         saveFile = fopen(historyFileName, "r");
-        int prev = ftell(saveFile);
+        int prev = (int)ftell(saveFile);
         fseek(saveFile, 0, SEEK_END);
-        int size = ftell(saveFile);
+        int size = (int)ftell(saveFile);
         fseek(saveFile, prev, SEEK_SET);
 
         if (size > 0) {
@@ -219,6 +221,8 @@ void loadHistory() {
             printf("loaded history correctly:\n");
             printHistory();
             fclose(saveFile);
-        } else printf("%s\n", "File is empty");
-    } else printf("History file not found or doesn't exist.\n");
+        } else
+            printf("%s\n", "File is empty");
+    } else
+        printf("History file not found or doesn't exist.\n");
 }

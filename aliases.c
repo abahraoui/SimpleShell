@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "linkedList.h"
 #include "shell.h"
+#include <ctype.h>
 
 List aliases;
 char *aliasFileName = ".aliases";
@@ -18,7 +19,6 @@ void saveAliases() {
 
 void loadAliases() {
     if (access(aliasFileName, F_OK) == 0){
-
         aliases = load_list(aliasFileName);
         for (int i = 0; i < size(aliases); ++i) {
             char *trimmedAlias = trimString(strdup(get_at(aliases, i)));
@@ -34,6 +34,7 @@ void loadAliases() {
         aliases = new_list();
     }
 }
+
 List aliasKeys() {
     List keys = new_list();
     for (int i = 0; i < size(aliases); ++i) {
@@ -61,7 +62,6 @@ void addToAlias(char **commandArray) {
     if (contains(aliasKeys(), commandArray[1])) {
         printf("%s\n", "Warning, this alias is already mapped. Overwriting...");
     }
-
     char *parsedInput = malloc(sizeof(char) * 512);
     parsedInput[0] = 0;
     int i = 1;
@@ -73,16 +73,15 @@ void addToAlias(char **commandArray) {
     }
     strcat(parsedInput, "\0");
     char *nameParsed =  malloc(sizeof(char) * 512);
-            strcpy( nameParsed,parsedInput);
+    strcpy( nameParsed,parsedInput);
     nameParsed = strtok(nameParsed, " ");
-    for(int i = 0; i < size(aliases); i++){
-        if(strcmp(get_at(aliasKeys(), i),nameParsed) == 0){
-            remove_at(aliases,i);
+    for(int j = 0; j < size(aliases); j++){
+        if(strcmp(get_at(aliasKeys(), j),nameParsed) == 0){
+            remove_at(aliases,j);
         }
     }
     push(aliases, parsedInput);
 }
-
 
 char *aliasCommand(int index) {
     char *command = malloc(sizeof(char) * 512);
@@ -140,7 +139,6 @@ void removeAlias(char **commandArray) {
         printf("The unalias command takes one parameter, but I received more than that. Try unalias <name>\n");
         return;
     }
-
     char *parsedInput = malloc(sizeof(char) * 512);
     parsedInput[0] = 0;
     int i = 1;
@@ -155,9 +153,9 @@ void removeAlias(char **commandArray) {
     char *nameParsed =  malloc(sizeof(char) * 512);
     strcpy( nameParsed,parsedInput);
     nameParsed = strtok(nameParsed, " ");
-    for(int i = 0; i < size(aliases); i++){
-        if(strcmp(get_at(aliasKeys(), i),nameParsed) == 0){
-            remove_at(aliases,i);
+    for(int j = 0; j < size(aliases); j++){
+        if(strcmp(get_at(aliasKeys(), j),nameParsed) == 0){
+            remove_at(aliases,j);
             check = true;
         }
     }
@@ -166,7 +164,13 @@ void removeAlias(char **commandArray) {
     } else {
         printf("Alias \"%s\" does not exist.\n", commandArray[1]);
     }
-
 }
 
-
+char *trimString(char *str) {
+    size_t len = strlen(str);
+    while (isspace(str[len - 1]))
+        --len;
+    while (*str && isspace(*str))
+        ++str, --len;
+    return strndup(str, len);
+}

@@ -6,6 +6,9 @@
 #include "history.h"
 #include "shell.h"
 #include "aliases.h"
+#include <wait.h>
+
+///this is to make sure the program does not go into an infinite loop - stage 9 - has to be defined outside of the function
 int numberOfTimes = 0;
 
 void changeDirectoryCommand(char *parameters[]) {
@@ -46,9 +49,8 @@ void readInput(char *commandArray[]) {
         numberOfTimes=0;
         return;
     }
-    if (tryToRunAliasCommand(commandArray) == 1){
+    if (tryToRunAliasCommand(commandArray) == 1)
        return;
-    }
     else if (strcmp(commandArray[0], "getpath") == 0)
         getPathCommand(commandArray);
     else if (strcmp(commandArray[0], "setpath") == 0)
@@ -83,15 +85,11 @@ void run(void) {
     while (1) {
         getcwd(currentPath, sizeof(currentPath));
         printf("%s> ", currentPath);
-
-
         char *d_buffer[512];
-
         if (fgets(d_buffer, 512, stdin) == NULL)
             break;
         if (strcmp(d_buffer, "exit\n") == 0)
             break;
-
         char *commandArray[50];
         const char *delimiter = " ;\t|><&\n";
         const char *token;
@@ -100,20 +98,31 @@ void run(void) {
         /* walk through other tokens */
         int i = 0;
         while (token != NULL) {
-
             commandArray[i] = token;
             token = strtok(NULL, delimiter);
             i++;
         }
-
         commandArray[i] = NULL;
-
-        if (commandArray[0] == NULL) continue;
-
+        if (commandArray[0] == NULL)
+            continue;
         addToHistory(commandArray);
-
         readInput(commandArray);   ///put all the reading input to choose command in a helper function.
     }
     saveHistory();
     saveAliases();
+}
+void execCommand(char *parameters[]) {
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("fork failed");
+        exit(1);
+    } else if (pid == 0) {
+        execvp(parameters[0], parameters);
+        char errorMessage[512] = "Error trying to execute ";
+        strcat(errorMessage, parameters[0]);
+        perror(errorMessage);
+        exit(1);
+    } else {
+        wait(NULL);
+    }
 }

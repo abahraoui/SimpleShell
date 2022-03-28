@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "shell.h"
 
+///this is to ensure that saving of the files is consistent
 const char *originalPath;
 
 void saveOriginalPath() {

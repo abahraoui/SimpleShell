@@ -33,25 +33,6 @@ void push(List list, char *value) {
     }
 }
 
-char *pop(List list) {
-    if (*list == NULL) {
-        delete_node(*list);
-        return NULL;
-    } else if ((*list)->next == NULL) {
-        char *tailValue = (*list)->value;
-        free(*list);
-        *list = NULL;
-        return tailValue;
-    }
-    Node *beforeTail = *list;
-    while (beforeTail->next->next != NULL)
-        beforeTail = beforeTail->next;
-    char *oldTailValue = beforeTail->next->value;
-    free(beforeTail->next);
-    beforeTail->next = NULL;
-    return oldTailValue;
-}
-
 void print_list(List list) {
     printf("[");
     Node *curr = *list;
@@ -62,35 +43,6 @@ void print_list(List list) {
         curr = curr->next;
     }
     printf("]\n");
-}
-
-char *peek(List list) {
-    if (*list == NULL)
-        return NULL;
-    else if ((*list)->next == NULL)
-        return (*list)->value;
-    Node *tail = *list;
-    while (tail->next != NULL)
-        tail = tail->next;
-    return tail->value;
-}
-
-char *rem(List list) {
-    if (*list == NULL)
-        return NULL;
-    char *val = (*list)->value;
-    if ((*list)->next == NULL) {
-        free(*list);
-        *list = NULL;
-    } else
-        *list = (*list)->next;
-    return val;
-}
-
-void add(List list, char *value) {
-    Node *node = new_node(value);
-    node->next = *list;
-    *list = node;
 }
 
 int is_empty(List list) {
@@ -107,11 +59,6 @@ int size(List list) {
         curr = curr->next;
     }
     return counter;
-}
-
-void clear(List list) {
-    while (!is_empty(list))
-        rem(list);
 }
 
 int index_of(List list, char *value) {
@@ -147,45 +94,6 @@ char *get_at(List list, int i) {
     return curr->value;
 }
 
-int replace_at(List list, int i, char *newValue) {
-    if (is_empty(list))
-        return 0;
-    int counter = 0;
-    Node *curr = *list;
-    while (counter++ != i) {
-        if (curr == NULL)
-            return 0;
-        curr = curr->next;
-    }
-    if (curr == NULL)
-        return 0;
-    curr->value = newValue;
-    return 1;
-}
-
-int insert_at(List list, int index, char *value) {
-    if (size(list) < index || index < 0)
-        return 0;
-    Node *newNode = new_node(value);
-    if (index == 0) {
-        if (!is_empty(list)) {
-            Node *first = *list;
-            newNode->next = first;
-        }
-        *list = newNode;
-        return 1;
-    }
-    Node *prev = *list;
-    int counter = 1;
-    while (prev != NULL && counter < index) {
-        prev = prev->next;
-        counter++;
-    }
-    newNode->next = prev->next;
-    prev->next = newNode;
-    return 1;
-}
-
 char *remove_at(List list, int index) {
     if (size(list) < index || is_empty(list) || index < 0)
         return NULL;
@@ -212,20 +120,6 @@ char *remove_at(List list, int index) {
     delete_node(toBeDeleted);
     return removed;
 }
-
-List copy_list(List list) {
-    return sublist(list, 0, size(list));
-}
-
-List sublist(List list, int start, int end) {
-    if (!(start >= 0 && end <= size(list) && start < end))
-        return NULL;
-    List copy = new_list();
-    while (start != end)
-        push(copy, get_at(list, start++));
-    return copy;
-}
-
 
 void save_list(List list, char *fileName) {
     FILE *file;

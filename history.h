@@ -18,4 +18,8 @@ void executeHistoryInvocation(char *commandArray[50]);
 
 int getNumberFromString(char *input);
 
+void saveHistory();
+
+void loadHistory();
+
 #endif

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include "shell.h"
 
+///this is to ensure that saving of the files is consistent
 const char *originalPath;
 
 void saveOriginalPath() {
@@ -22,7 +23,7 @@ void restoreOriginalPath() {
 
 int main(void) {
     saveOriginalPath();
-    printf("%s\n", "> Welcome to the Amogus Shell! Type exit or CTRL+D to exit the shell");
+    printf("%s\n", "> Welcome to the CS210 Shell! Type exit or CTRL+D to exit the shell");
     run();
     printf("\nExiting...\n");
     restoreOriginalPath();

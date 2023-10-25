@@ -1,2 +1,4 @@
-# CS210 Simple Amogus Shell
+# Simple Shell
+
+### Welcome to the Simple Shell !
 
